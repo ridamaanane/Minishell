@@ -6,7 +6,7 @@
 /*   By: rmaanane <ridamaanane@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 17:24:56 by rmaanane          #+#    #+#             */
-/*   Updated: 2025/08/02 18:12:35 by rmaanane         ###   ########.fr       */
+/*   Updated: 2025/08/02 18:52:18 by rmaanane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,29 +64,6 @@ void	prepare_path_and_exec(t_cmd *temp, t_env **env, int *pipes)
 	execve(path, temp->argv, envp);
 }
 
-void	handle_child_process(t_cmd *temp, int i, int *pipes, t_env **env,
-		int nb_pipes)
-{
-	int	j;
-
-	j = 0;
-	if (i != 0)
-		dup2(pipes[(i - 1) * 2], STDIN_FILENO);
-	if (temp->next && !has_output_redirection(temp))
-		dup2(pipes[i * 2 + 1], STDOUT_FILENO);
-	while (j < nb_pipes * 2)
-		close(pipes[j++]);
-	if (find_redirection(temp->redir))
-		handle_redirection_error(temp);
-	if (is_builtin(temp))
-	{
-		exec_builtin(temp, env);
-		free(pipes);
-		exit(0);
-	}
-	prepare_path_and_exec(temp, env, pipes);
-}
-
 
 void	pipe_executor(t_cmd *cmd, t_env **env)
 {
@@ -104,7 +81,10 @@ void	pipe_executor(t_cmd *cmd, t_env **env)
 	{
 		pid = fork();
 		if (pid == 0)
-			handle_child_process(temp, i, pipes, env, nb_pipes);
+		{
+			handle_child_process(temp, i, pipes, nb_pipes);
+			handle_child_helper(temp, pipes, env);
+		}
 		else if (pid < 0)
 		{
 			perror("fork failed");

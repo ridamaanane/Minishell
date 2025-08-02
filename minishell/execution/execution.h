@@ -30,13 +30,20 @@ char **env_to_envp(t_env *env);
 void free_envp(char **envp);
 
 //pipe_executor
+void	handle_redirection_error(t_cmd *temp);
+void	prepare_path_and_exec(t_cmd *temp, t_env **env, int *pipes);
 void	pipe_executor(t_cmd *cmd, t_env **env);
 
-//pipe_helpers
+//pipe_ex_helpers
 int	count_cmds(t_cmd *cmd);
 int	*create_pipes(t_cmd *cmd);
-void	close_pipe_and_wait(int nb_cmds, int nb_pipes, int *pipes);
+void close_pipe_and_wait(int nb_cmds, int nb_pipes, int *pipes);
 int	has_output_redirection(t_cmd *cmd);
+
+//pipe_ex_helpers2
+void	handle_child_process(t_cmd *temp, int i, int *pipes, int nb_pipes);
+void	handle_child_helper(t_cmd *temp, int *pipes, t_env **env);
+
 
 //dup_utils
 int check_fd(int fd, t_redir *redir);
