@@ -1,0 +1,10 @@
+*.o
+a.out
+libft/*.o
+libft/a.out
+libft/libft.a
+libft/README.md
+minishell
+*.swap
+.vscode
+lexer/minishell
