@@ -22,6 +22,7 @@
 #include <fcntl.h>
 #include <readline/readline.h>
 
+
 //utils
 void free_split_content(char **array);
 char *get_cmd_path(char *cmd, t_env *env);
@@ -29,7 +30,13 @@ char **env_to_envp(t_env *env);
 void free_envp(char **envp);
 
 //pipe_executor
-void pipe_executor(t_cmd *cmd, t_env **env);
+void	pipe_executor(t_cmd *cmd, t_env **env);
+
+//pipe_helpers
+int	count_cmds(t_cmd *cmd);
+int	*create_pipes(t_cmd *cmd);
+void	close_pipe_and_wait(int nb_cmds, int nb_pipes, int *pipes);
+int	has_output_redirection(t_cmd *cmd);
 
 //dup_utils
 int check_fd(int fd, t_redir *redir);
